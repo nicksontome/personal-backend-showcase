@@ -1,7 +1,7 @@
 import express from 'express'
 import swaggerUi from 'swagger-ui-express'
 import { swaggerSpec } from './infrastructure/config/swagger'
-import { authController, onboardingController, workoutController } from './infrastructure/ioc/container'
+import { authController, onboardingController } from './infrastructure/ioc/container'
 import { createRoutes } from './infrastructure/http/routes/index'
 
 const app = express()
@@ -18,7 +18,7 @@ app.get('/health', (_req, res) => {
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
-app.use('/', createRoutes(authController, onboardingController, workoutController))
+app.use('/', createRoutes(authController, onboardingController))
 
 app.listen(PORT, () => {
   console.log(`Showcase API running on port ${PORT}`)

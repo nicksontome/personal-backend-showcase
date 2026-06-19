@@ -26,9 +26,10 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
   const token = authHeader.split(' ')[1]
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'showcase-demo-secret') as {
-      userId: string
-    }
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'showcase-demo-secret-not-for-production',
+    ) as { userId: string }
     req.userId = decoded.userId
     next()
   } catch (error) {

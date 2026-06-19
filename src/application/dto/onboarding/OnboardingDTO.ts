@@ -4,10 +4,14 @@ import { z } from 'zod'
  * OnboardingDTO
  *
  * Validates input to POST /onboarding.
- * Accepts the user's training goal, which determines the generated plan.
+ *
+ * goal — the user's training objective, used to determine reps, sets,
+ * and rest time for their generated workout plan.
  */
 export const onboardingSchema = z.object({
-  goal: z.enum(['muscle_gain', 'fat_loss'], 'Goal must be either "muscle_gain" or "fat_loss"'),
+  goal: z.enum(['muscle_gain', 'fat_loss'], {
+    message: 'Goal must be either "muscle_gain" or "fat_loss"',
+  }),
 })
 
 export type OnboardingDTO = z.infer<typeof onboardingSchema>

@@ -6,7 +6,7 @@ import { authMiddleware } from '../middleware/auth.middleware'
  * @swagger
  * tags:
  *   name: Onboarding
- *   description: Initial goal selection and workout plan generation
+ *   description: Pick a training goal and receive a complete PPL workout plan
  */
 
 export function createOnboardingRoutes(controller: OnboardingController): Router {
@@ -17,6 +17,11 @@ export function createOnboardingRoutes(controller: OnboardingController): Router
    * /onboarding:
    *   post:
    *     summary: Complete onboarding and generate a workout plan
+   *     description: >
+   *       Pick a goal (muscle_gain or fat_loss) and receive a complete
+   *       Push/Pull/Legs (PPL) plan. The exercises are fixed; reps, sets,
+   *       and rest time are tailored to the chosen goal using evidence-based
+   *       guidelines (hypertrophy: 8-12 reps / fat loss: 12-15 reps with shorter rest).
    *     tags: [Onboarding]
    *     security:
    *       - bearerAuth: []
@@ -30,17 +35,48 @@ export function createOnboardingRoutes(controller: OnboardingController): Router
    *             properties:
    *               goal:
    *                 type: string
-   *                 enum: [muscle_gain, fat_loss]
+   *                 enum: ["muscle_gain", "fat_loss"]
    *                 example: "muscle_gain"
    *     responses:
    *       201:
-   *         description: Plan generated successfully
+   *         description: Workout plan generated
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 goal:
+   *                   type: string
+   *                   example: "muscle_gain"
+   *                 days:
+   *                   type: array
+   *                   items:
+   *                     type: object
+   *                     properties:
+   *                       label:
+   *                         type: string
+   *                         example: "Push"
+   *                       exercises:
+   *                         type: array
+   *                         items:
+   *                           type: object
+   *                           properties:
+   *                             name:
+   *                               type: string
+   *                               example: "Bench Press"
+   *                             reps:
+   *                               type: integer
+   *                               example: 10
+   *                             sets:
+   *                               type: integer
+   *                               example: 4
+   *                             restSeconds:
+   *                               type: integer
+   *                               example: 75
    *       400:
-   *         description: Invalid input
+   *         description: Invalid or missing goal
    *       401:
-   *         description: Missing or invalid token
-   *       404:
-   *         description: User not found
+   *         description: Missing or invalid auth token
    */
   router.post('/', authMiddleware, (req, res) => controller.complete(req, res))
 
